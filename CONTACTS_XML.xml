@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-16"?>
+<data>
+    <contacts>
+        <contact>
+            <company>
+              <companyCode>01</companyCode>
+              <companyName>Mustermann AG</companyName>
+            </company>
+            <contactCustomerNumber></contactCustomerNumber>
+            <contactNameB></contactNameB>
+            <contactNameA>Holzbau Müller GmbH</contactNameA>
+            <contactTAXidNumber></contactTAXidNumber>
+            <contactFaxNumber></contactFaxNumber>
+            <contactVendorNumber>67890</contactVendorNumber>
+            <contactBankSWIFT>1234567</contactBankSWIFT>
+            <contactBank>Musterbank</contactBank>
+            <contactAddressCity>Musterstadt</contactAddressCity>
+            <contactTelephoneNumber>+49 1234 56789</contactTelephoneNumber>
+            <contactMatchcode>HOLZMUELLER</contactMatchcode>
+            <contactBankSWIFT>ABCDEFG</contactBankSWIFT>
+            <contactVATidNumber></contactVATidNumber>
+            <contactType>SUP</contactType>
+            <contactAddressCountryShort>DE</contactAddressCountryShort>
+            <contactBankIBAN>DE100000000000000</contactBankIBAN>
+            <contactILN></contactILN>
+            <contactNameC></contactNameC>
+            <contactAddressStreet>Musterweg 2</contactAddressStreet>
+            <contactNumber>12345</contactNumber>
+            <contactAddressZipCode>12345</contactAddressZipCode>
+            <contactAddressCountry>Deutschland</contactAddressCountry>
+            <contactEmail>info@muster-holz.de</contactEmail>
+        </contact>
+        <contact>
+            <company>
+              <companyCode>02</companyCode>
+              <companyName>zweiter</companyName>
+            </company>
+            <contactBank>Musterbank</contactBank>
+            <contactBankSWIFT>ABCDEFG</contactBankSWIFT>
+            <contactType>SUP</contactType>
+            <contactCustomerNumber></contactCustomerNumber>
+            <contactILN></contactILN>
+            <contactAddressCity>Musterstadt</contactAddressCity>
+            <contactAddressStreet>Musterweg 2</contactAddressStreet>
+            <contactAddressCountryShort>DE</contactAddressCountryShort>
+            <contactBankSWIFT>1234567</contactBankSWIFT>
+            <contactNumber>12345</contactNumber>
+            <contactAddressCountry>Deutschland</contactAddressCountry>
+            <contactFaxNumber></contactFaxNumber>
+            <contactBankIBAN>DE100000000000000</contactBankIBAN>
+            <contactTAXidNumber></contactTAXidNumber>
+            <contactVATidNumber></contactVATidNumber>
+            <contactMatchcode>HOLZMUELLER</contactMatchcode>
+            <contactNameA>Holzbau Müller GmbH</contactNameA>
+            <contactAddressZipCode>12345</contactAddressZipCode>
+            <contactEmail>info@muster-holz.de</contactEmail>
+            <contactNameC></contactNameC>
+            <contactVendorNumber>67890</contactVendorNumber>
+            <contactNameB></contactNameB>
+            <contactTelephoneNumber>+49 1234 56789</contactTelephoneNumber>
+        </contact>
+        <contact>
+            <company>
+              <companyName>dritter</companyName>
+              <companyCode>03</companyCode>
+            </company>
+            <contactAddressCountry>Deutschland</contactAddressCountry>
+            <contactAddressCountryShort>DE</contactAddressCountryShort>
+            <contactTelephoneNumber>+49 1234 56789</contactTelephoneNumber>
+            <contactBank>Musterbank</contactBank>
+            <contactFaxNumber></contactFaxNumber>
+            <contactILN></contactILN>
+            <contactTAXidNumber></contactTAXidNumber>
+            <contactAddressStreet>Musterweg 2</contactAddressStreet>
+            <contactMatchcode>HOLZMUELLER</contactMatchcode>
+            <contactAddressZipCode>12345</contactAddressZipCode>
+            <contactType>SUP</contactType>
+            <contactVendorNumber>67890</contactVendorNumber>
+            <contactNameC></contactNameC>
+            <contactNumber>12345</contactNumber>
+            <contactEmail>info@muster-holz.de</contactEmail>
+            <contactBankIBAN>DE100000000000000</contactBankIBAN>
+            <contactNameB></contactNameB>
+            <contactNameA>Holzbau Müller GmbH</contactNameA>
+            <contactBankSWIFT>ABCDEFG</contactBankSWIFT>
+            <contactVATidNumber></contactVATidNumber>
+            <contactBankSWIFT>1234567</contactBankSWIFT>
+            <contactAddressCity>Musterstadt</contactAddressCity>
+            <contactCustomerNumber></contactCustomerNumber>
+        </contact>
+    </contacts>
+</data>

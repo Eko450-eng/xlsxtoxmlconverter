@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-16"?>
+<data>
+	<contacts>
+		<contact>
+			<company>
+				<companyCode>01</companyCode><!-- Required -->
+				<companyName>Mustermann GmbH</companyName><!-- Required -->
+			</company>
+			<contactType>CUS</contactType><!-- Required -->
+			<contactNumber>50001</contactNumber><!-- Required -->
+			<contactVendorNumber/>
+			<contactCustomerNumber>50001</contactCustomerNumber>
+			<contactNameA>Test Sales GmbH</contactNameA><!-- Required -->
+			<contactNameB></contactNameB>
+			<contactNameC></contactNameC>
+			<contactAddressStreet>Testweg 50</contactAddressStreet>
+			<contactAddressZipCode>71634</contactAddressZipCode>
+			<contactAddressCity>Ludwigsburg</contactAddressCity>
+			<contactAddressCountry>Deutschland</contactAddressCountry>
+			<contactAddressCountryShort>DE</contactAddressCountryShort><!-- Required if ELO Invoice -->
+			<contactTelephoneNumber>123456789</contactTelephoneNumber>
+			<contactFaxNumber>123456788</contactFaxNumber>
+			<contactEmail>test@test.com</contactEmail>
+			<contactBank/>
+			<contactBankNumber/>
+			<contactBankAccountNumber/>
+			<contactBankSWIFT/>
+			<contactBankIBAN/>
+			<contactILN/>
+			<contactTAXidNumber/>
+			<contactVATidNumber/>
+			<contactMatchcodes>
+				<contactMatchcode>TSG</contactMatchcode>
+			</contactMatchcodes>
+			<customFields></customFields>
+		</contact>
+	</contacts>
+</data>

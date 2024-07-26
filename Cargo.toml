@@ -1,0 +1,20 @@
+[package]
+name = "evcconvert"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+eframe = "0.28.1"
+egui = "0.28.1"
+egui_code_editor = "0.2.9"
+winit = { version = "0.30.4", default-features = false, features = ["wayland", "x11"] }
+# egui_extras = {version="0.28.1", features= ["all_loaders"]}
+env_logger = "0.11.3"
+# rayon = "1.10.0"
+regex = "1.10.5"
+serde = "1.0.204"
+serde_json = "1.0.120"
+struct_iterable = "0.1.1"
+calamine = "0.25.0"
