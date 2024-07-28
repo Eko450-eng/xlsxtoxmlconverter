@@ -4,6 +4,7 @@ use std::env;
 use std::path::PathBuf;
 
 pub struct AppState {
+    pub config_content: String,
     pub field1: String,
     pub field2: String,
     pub field3: String,
@@ -22,6 +23,8 @@ pub struct AppState {
     pub open_input_dialog: Option<FileDialog>,
     pub open_config_dialog: Option<FileDialog>,
     pub open_output_dialog: Option<FileDialog>,
+
+    pub show_editor: bool,
 }
 
 pub type Contacts = Vec<HashMap<String, String>>;
@@ -43,6 +46,7 @@ impl Default for AppState {
             path
         };
         Self {
+            config_content: "".to_string(),
             out_file_name: "CONTACTS.xml".to_string(),
             field1: "data".to_string(),
             field2: "contacts".to_string(),
@@ -56,6 +60,7 @@ impl Default for AppState {
             open_input_dialog: None,
             open_config_dialog: None,
             open_output_dialog: None,
+            show_editor: false,
         }
     }
 }

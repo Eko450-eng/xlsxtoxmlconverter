@@ -4,15 +4,22 @@ mod utils;
 mod xlsx_maniulation;
 mod xml_manipulation;
 
+use std::fs;
+
 use eframe::App;
-use egui::{Align, Layout};
+use egui::{Align, Align2, Direction, Key, Layout, Modifiers};
+use egui_code_editor::{CodeEditor, Syntax};
 use egui_file::FileDialog;
+use egui_toast::{Toast, ToastKind, ToastOptions, Toasts};
 use types::AppState;
 use xlsx_maniulation::read_excel;
 use xml_manipulation::generate_xml;
 
 impl App for AppState {
     fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
+        let mut toast = Toasts::new()
+            .anchor(Align2::RIGHT_TOP, (-10.0, -10.0))
+            .direction(Direction::BottomUp);
         egui::CentralPanel::default().show(ctx, |ui| {
             ui.with_layout(Layout::top_down(Align::Center), |ui| {
                 ui.horizontal(|ui| {
@@ -38,6 +45,11 @@ impl App for AppState {
                     ui.text_edit_singleline(&mut self.child_block);
                 });
 
+                ui.horizontal(|ui| {
+                    ui.label("Filters for Fourth group");
+                    ui.text_edit_singleline(&mut self.filters);
+                });
+
                 //Paths
                 ui.horizontal(|ui| {
                     if (ui.button(format!(
@@ -60,16 +72,18 @@ impl App for AppState {
                 });
 
                 ui.horizontal(|ui| {
-                    if (ui.button(format!(
-                        "Config :{}",
-                        self.config_path.clone().unwrap().to_string_lossy()
-                    )))
-                    .clicked()
+                    if ui
+                        .button(format!(
+                            "Config :{}",
+                            self.config_path.clone().unwrap().to_string_lossy()
+                        ))
+                        .clicked()
                     {
                         let mut dialog_config = FileDialog::open_file(self.config_path.clone());
                         dialog_config.open();
                         self.open_config_dialog = Some(dialog_config);
                     }
+
                     if let Some(dialog) = &mut self.open_config_dialog {
                         if dialog.show(ctx).selected() {
                             if let Some(file) = dialog.path() {
@@ -77,7 +91,52 @@ impl App for AppState {
                             }
                         }
                     }
+
+                    if ui.button("Edit config").clicked() {
+                        if let Some(config_path) = &self.config_path {
+                            if config_path.is_file() {
+                                self.show_editor = true;
+                            } else {
+                                toast.add(Toast {
+                                    text: "No Config selected!".into(),
+                                    kind: ToastKind::Error,
+                                    options: ToastOptions::default()
+                                        .duration_in_seconds(2.0)
+                                        .show_progress(true),
+                                    ..Default::default()
+                                });
+                                self.show_editor = false;
+                            }
+                            if let Ok(c) = fs::read_to_string(config_path) {
+                                self.config_content = c;
+                            };
+                        }
+                    }
                 });
+
+                toast.show(ctx);
+
+                if self.show_editor {
+                    if ui.input(|i| i.to_owned().consume_key(Modifiers::CTRL, Key::S)) {
+                        match fs::write(
+                            self.config_path.clone().unwrap(),
+                            self.config_content.clone(),
+                        ) {
+                            Ok(_) => {}
+                            Err(e) => {
+                                println!("Saving failed: {:?}", e)
+                            }
+                        }
+                    };
+
+                    CodeEditor::default()
+                        .id_source("code_editor")
+                        .with_rows(12)
+                        .with_fontsize(12.0)
+                        .with_syntax(Syntax::default())
+                        .with_numlines(true)
+                        .show(ui, &mut self.config_content);
+                }
 
                 ui.horizontal(|ui| {
                     if (ui.button(format!(
