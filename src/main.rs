@@ -12,6 +12,7 @@ use egui_code_editor::{CodeEditor, Syntax};
 use egui_file::FileDialog;
 use egui_toast::{Toast, ToastKind, ToastOptions, Toasts};
 use types::AppState;
+use utils::generate_defaults;
 use xlsx_maniulation::read_excel;
 use xml_manipulation::generate_xml;
 
@@ -23,30 +24,50 @@ impl App for AppState {
         egui::CentralPanel::default().show(ctx, |ui| {
             ui.with_layout(Layout::top_down(Align::Center), |ui| {
                 ui.horizontal(|ui| {
-                    ui.label("Sheet Name?");
+                    ui.label("Sheet Name?")
+                    .on_hover_ui(|ui| {
+                        ui.label("The name of the Excel sheet that contains the data");
+                    });
                     ui.text_edit_singleline(&mut self.worksheet_name);
                 });
 
                 // Groups
                 ui.horizontal(|ui| {
-                    ui.label("First group - Data");
+                    ui.label("First group - Data")
+                    .on_hover_ui(|ui| {
+                        ui.label("The Parent box in the EVC this is typically <data>");
+                    });
                     ui.text_edit_singleline(&mut self.field1);
                 });
                 ui.horizontal(|ui| {
-                    ui.label("Second group - Contacts");
+                    ui.label("Second group - Contacts")
+                    .on_hover_ui(|ui| {
+                        ui.label("The Parent box in the EVC this is typically <contacts>");
+                    });
                     ui.text_edit_singleline(&mut self.field2);
                 });
                 ui.horizontal(|ui| {
-                    ui.label("Third group - Contact");
+                    ui.label("Third group - Contact")
+                    .on_hover_ui(|ui| {
+                        ui.label("The Parent box in the EVC this is typically <contact>");
+                    });
                     ui.text_edit_singleline(&mut self.field3);
                 });
                 ui.horizontal(|ui| {
-                    ui.label("Forth group - Company");
+                    ui.label("Forth group - Company")
+                    .on_hover_ui(|ui| {
+                        ui.label("The Parent box in the EVC this is typically <company> and contains the companyNumber and companyName");
+                    });
                     ui.text_edit_singleline(&mut self.child_block);
                 });
 
                 ui.horizontal(|ui| {
-                    ui.label("Filters for Fourth group");
+                    ui.label("Filters for Fourth group")
+                    .on_hover_ui(|ui| {
+                        ui.label("Set which fields should be put inside the fourth group");
+                        ui.label("Seperated with ','");
+                        ui.label("Will use mapped Values - not the names set inside the XLSX");
+                    });
                     ui.text_edit_singleline(&mut self.filters);
                 });
 
@@ -92,6 +113,7 @@ impl App for AppState {
                         }
                     }
 
+
                     if ui.button("Edit config").clicked() {
                         if let Some(config_path) = &self.config_path {
                             if config_path.is_file() {
@@ -112,6 +134,13 @@ impl App for AppState {
                             };
                         }
                     }
+
+                    if ui.button("Create default config at .../Documents/evc").clicked(){
+                        match generate_defaults(self) {
+                            Ok(())=>println!("Createdd"),
+                            Err(e) => eprintln!("{e}"),
+                        };
+                    };
                 });
 
                 toast.show(ctx);
@@ -169,6 +198,10 @@ impl App for AppState {
                         generate_xml(self, values)
                     }
                 }
+            });
+            egui::TopBottomPanel::top("menu_bar").show_inside(ui, |ui| {
+                ui.label("Ctrl-S to save in editor");
+                ui.label("Hover over Text for more information");
             });
         });
     }

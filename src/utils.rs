@@ -1,7 +1,13 @@
-use std::{collections::HashMap, fs::File, io::{BufRead, BufReader}};
+use std::{
+    collections::HashMap,
+    env,
+    error::Error,
+    fs::{self, File},
+    io::{BufRead, BufReader},
+    path::PathBuf,
+};
 
 use crate::types::AppState;
-
 
 pub fn generate_config(app: &mut AppState) -> Vec<HashMap<String, String>> {
     let mut kv_list: Vec<HashMap<String, String>> = vec![];
@@ -36,4 +42,71 @@ pub fn map_to_evc(input_value: String, app: &mut AppState) -> String {
         }
     }
     rv
+}
+
+pub fn generate_defaults(app: &mut AppState) -> Result<(), String> {
+    // Create File structure
+    let mut path = get_default_documents_path();
+    path.push("evc");
+
+    let default_config_text="
+Mandant Nr. = companyCode
+Mandant Name = companyName
+Typ = contactType
+Kontakt Nr. = contactNumber
+Kreditoren Nr. = contactVendorNumber
+Kunden Nr. = contactCustomerNumber
+Name 1 = contactNameA
+Name 2 = contactNameB
+Name 3 = contactNameC
+Strasse = contactAddressStreet
+PLZ = contactAddressZipCode
+Ort = contactAddressCity
+Land = contactAddressCountry
+Land Kürzel = contactAddressCountryShort
+Telefon = contactTelephoneNumber
+Fax = contactFaxNumber
+Email = contactEmail
+BLZ = contactBankSWIFT
+Institut = contactBank
+BIC = contactBankSWIFT
+IBAN = contactBankIBAN
+ILN = contactILN
+Steuer Nr. = contactTAXidNumber
+Ust. ID = contactVATidNumber
+Matchcode = contactMatchcode
+        ";
+
+    match fs::create_dir_all(path.clone()) {
+        Ok(()) => {
+            let mut file_path = PathBuf::new();
+            file_path.push(path.clone());
+            path.push("config");
+            match fs::write(path.clone(), default_config_text) {
+                Ok(_) => {
+                    app.config_path = Some(path);
+                    Ok(())
+                }
+                Err(e) => Err(format!("Failed creating the default_config due to {e}")),
+            }
+        }
+        Err(e) => Err(format!("Failed creating default file Structure due to {e}")),
+    }
+}
+
+pub fn get_default_documents_path() -> PathBuf {
+    if std::env::consts::OS == "windows" {
+        // PathBuf::from("C:\\\\")
+        let mut path = PathBuf::new();
+        let home = env::var("USERPROFILE").unwrap();
+        path.push(home);
+        path.push("Documents");
+        path
+    } else {
+        let mut path = PathBuf::new();
+        let home = env::var("HOME").unwrap();
+        path.push(home);
+        path.push("Documents");
+        path
+    }
 }

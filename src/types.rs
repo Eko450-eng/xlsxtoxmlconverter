@@ -3,6 +3,8 @@ use std::collections::HashMap;
 use std::env;
 use std::path::PathBuf;
 
+use crate::utils::get_default_documents_path;
+
 pub struct AppState {
     pub config_content: String,
     pub field1: String,
@@ -31,20 +33,7 @@ pub type Contacts = Vec<HashMap<String, String>>;
 
 impl Default for AppState {
     fn default() -> Self {
-        let default_document_path: PathBuf = if std::env::consts::OS == "windows" {
-            // PathBuf::from("C:\\\\")
-            let mut path = PathBuf::new();
-            let home = env::var("USERPROFILE").unwrap();
-            path.push(home);
-            path.push("Documents");
-            path
-        } else {
-            let mut path = PathBuf::new();
-            let home = env::var("HOME").unwrap();
-            path.push(home);
-            path.push("Documents");
-            path
-        };
+        let default_document_path: PathBuf = get_default_documents_path();
         Self {
             config_content: "".to_string(),
             out_file_name: "CONTACTS.xml".to_string(),
