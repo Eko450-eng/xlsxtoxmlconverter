@@ -211,13 +211,16 @@ fn main() -> eframe::Result {
     env_logger::init(); // Log to stderr (if you run with `RUST_LOG=debug`).
 
     let config = AppState::default();
+    let icon_bytes: &[u8] = include_bytes!("resources/icon.png");
+    let icon_data = eframe::icon_data::from_png_bytes(icon_bytes);
 
     let options = eframe::NativeOptions {
         viewport: egui::ViewportBuilder::default()
-            .with_app_id("Scout")
+            .with_icon(icon_data.unwrap())
+            .with_app_id("xtox")
             .with_inner_size([1080.0, 720.0]),
         ..Default::default()
     };
 
-    eframe::run_native("Scout", options, Box::new(|_cc| Ok(Box::new(config))))
+    eframe::run_native("xtox", options, Box::new(|_cc| Ok(Box::new(config))))
 }

@@ -49,8 +49,7 @@ pub fn generate_defaults(app: &mut AppState) -> Result<(), String> {
     let mut path = get_default_documents_path();
     path.push("evc");
 
-    let default_config_text="
-Mandant Nr. = companyCode
+    let default_config_text="Mandant Nr. = companyCode
 Mandant Name = companyName
 Typ = contactType
 Kontakt Nr. = contactNumber
@@ -74,8 +73,7 @@ IBAN = contactBankIBAN
 ILN = contactILN
 Steuer Nr. = contactTAXidNumber
 Ust. ID = contactVATidNumber
-Matchcode = contactMatchcode
-        ";
+Matchcode = contactMatchcode";
 
     match fs::create_dir_all(path.clone()) {
         Ok(()) => {
