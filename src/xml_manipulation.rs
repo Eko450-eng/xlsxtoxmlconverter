@@ -24,7 +24,7 @@ fn create_tag(app: &mut AppState, key: String, value: String, indents: i16) -> S
     r.join("")
 }
 
-pub fn generate_xml(app: &mut AppState, contacts_list: Contacts) {
+pub fn generate_xml_new(app: &mut AppState, contacts_list: Contacts) {
     // Genreate Header
     let mut output = app.output.clone().unwrap();
     let output_name = PathBuf::from(app.out_file_name.clone());
@@ -91,7 +91,7 @@ pub fn generate_xml(app: &mut AppState, contacts_list: Contacts) {
     buf.push(field1_closing);
 }
 
-pub fn gen(app: &mut AppState, contacts_list: Contacts) {
+pub fn generate_xml(app: &mut AppState, contacts_list: Contacts) {
     let mut output = app.output.clone().unwrap();
     let output_name = PathBuf::from(app.out_file_name.clone());
 
