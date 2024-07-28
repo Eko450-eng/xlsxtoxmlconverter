@@ -154,9 +154,9 @@ pub fn gen(app: &mut AppState, contacts_list: Contacts) {
     buf.push(field2_closing);
     buf.push(field1_closing);
 
-    if Path::new(&output).exists() {
-        let _ = fs::remove_file(&output);
-    };
+    // if Path::new(&output).exists() {
+    //     let _ = fs::remove_file(&output);
+    // };
 
     match fs::File::create_new(output) {
         Ok(mut file) => match file.write_all(buf.join("\n").as_bytes()) {
