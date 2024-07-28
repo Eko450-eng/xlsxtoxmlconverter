@@ -29,7 +29,12 @@ pub type Contacts = Vec<HashMap<String, String>>;
 impl Default for AppState {
     fn default() -> Self {
         let default_document_path: PathBuf = if std::env::consts::OS == "windows" {
-            PathBuf::from("C:\\\\")
+            // PathBuf::from("C:\\\\")
+            let mut path = PathBuf::new();
+            let home = env::var("USERPROFILE").unwrap();
+            path.push(home);
+            path.push("Documents");
+            path
         } else {
             let mut path = PathBuf::new();
             let home = env::var("HOME").unwrap();
