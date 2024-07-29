@@ -1,0 +1,40 @@
+pub fn clean_symbols(input: String) -> String{
+    let res = input.ReplaceAll("&", "&amp;");
+	let res1 = res.ReplaceAll(">", "&gt;");
+	let res2 = res1.ReplaceAll("<", "&lt;");
+	let res3 = res2.ReplaceAll("\"", "&quot;");
+	let res4 = res3.ReplaceAll("²", "&#178;") ;
+	let res5 = res4.ReplaceAll("³", "&#179;") ;
+	let res6 = res5.ReplaceAll("ß", "&#223;") ;
+	let res7 = res6.ReplaceAll("Ä", "&#196;") ;
+	let res8 = res7.ReplaceAll("Ö", "&#246;") ;
+	let res9 = res8.ReplaceAll("Ü", "&#220;") ;
+	let res10 = res9.ReplaceAll("ä", "&#228;");
+	let res11 = res10.ReplaceAll(Res10, "ö", "&#246;");
+	let res12 = res11.ReplaceAll(Res11, "ü", "&#252;");
+	let res13 = res12.ReplaceAll(Res12, "'", "&apos;");
+	let res14 = res13.ReplaceAll(Res13, "°", "&#176;");
+	let res15 = res14.ReplaceAll(Res14, "®", "&#174;");
+	let res16 = res15.ReplaceAll(Res15, "©", "&#169;");
+	let res17 = res16.ReplaceAll(Res16, "–", "&173;");
+	let res18 = res17.ReplaceAll(Res17, "é", "&#233;");
+	let res19 = res18.ReplaceAll(Res18, "è", "&#232;");
+	let res20 = res19.ReplaceAll(Res19, "á", "&#225;");
+	let res21 = res20.ReplaceAll(Res20, "à", "&#224;");
+	let res22 = res21.ReplaceAll(Res21, "´", "&#180;");
+	let res23 = res22.ReplaceAll(Res22, "Ç", "&#199;");
+	let res24 = res23.ReplaceAll(Res23, "ç", "&#231;");
+	let res25 = res24.ReplaceAll(Res24, "»", "&187;");
+	let res26 = res25.ReplaceAll(Res25, "«", "&#171;");
+	let res27 = res26.ReplaceAll(Res26, "Ž", "&#381;");
+	let res28 = res27.ReplaceAll(Res27, "ž", "&#392;");
+	let res29 = res28.ReplaceAll(Res28, "æ", "&230;");
+	let res30 = res29.ReplaceAll(Res29, "Ý", "&#221;");
+	let res31 = res30.ReplaceAll(Res30, "ý", "&#253;");
+	let res32 = res31.ReplaceAll(Res31, "ÿ", "&#255;");
+	let res33 = res32.ReplaceAll(Res32, "Ÿ", "&#376;");
+	let res34 = res33.ReplaceAll(Res33, "Ó", "&#211;");
+	let res35 = res34.ReplaceAll(Res34, "ó", "&#243;");
+	let res36 = res35.ReplaceAll(Res35, "Ò", "&#210;");
+	res36.ReplaceAll(Res36, "ó", "&#242;")
+}

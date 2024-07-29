@@ -110,44 +110,48 @@ pub fn get_default_documents_path() -> PathBuf {
 }
 
 pub fn clean_symbols(input: String) -> String {
-    let res = input.replace("&", "&amp;");
-    let res1 = res.replace(">", "&gt;");
-    let res2 = res1.replace("<", "&lt;");
-    let res3 = res2.replace("\"", "&quot;");
-    let res4 = res3.replace("²", "&#178;");
-    let res5 = res4.replace("³", "&#179;");
-    let res6 = res5.replace("ß", "&#223;");
-    let res7 = res6.replace("Ä", "&#196;");
-    let res8 = res7.replace("Ö", "&#246;");
-    let res9 = res8.replace("Ü", "&#220;");
-    let res10 = res9.replace("ä", "&#228;");
-    let res11 = res10.replace("ö", "&#246;");
-    let res12 = res11.replace("ü", "&#252;");
-    let res13 = res12.replace("'", "&apos;");
-    let res14 = res13.replace("°", "&#176;");
-    let res15 = res14.replace("®", "&#174;");
-    let res16 = res15.replace("©", "&#169;");
-    let res17 = res16.replace("–", "&173;");
-    let res18 = res17.replace("é", "&#233;");
-    let res19 = res18.replace("è", "&#232;");
-    let res20 = res19.replace("á", "&#225;");
-    let res21 = res20.replace("à", "&#224;");
-    let res22 = res21.replace("´", "&#180;");
-    let res23 = res22.replace("Ç", "&#199;");
-    let res24 = res23.replace("ç", "&#231;");
-    let res25 = res24.replace("»", "&187;");
-    let res26 = res25.replace("«", "&#171;");
-    let res27 = res26.replace("Ž", "&#381;");
-    let res28 = res27.replace("ž", "&#392;");
-    let res29 = res28.replace("æ", "&230;");
-    let res30 = res29.replace("Ý", "&#221;");
-    let res31 = res30.replace("ý", "&#253;");
-    let res32 = res31.replace("ÿ", "&#255;");
-    let res33 = res32.replace("Ÿ", "&#376;");
-    let res34 = res33.replace("Ó", "&#211;");
-    let res35 = res34.replace("ó", "&#243;");
-    let res36 = res35.replace("Ò", "&#210;");
-    res36.replace("ó", "&#242;")
+    let mut result = String::new();
+
+    result = input.replace("&", "&amp;");
+    result = result.replace(">", "&gt;");
+    result = result.replace("<", "&lt;");
+    result = result.replace("\"", "&quot;");
+    result = result.replace("²", "&#178;");
+    result = result.replace("³", "&#179;");
+    result = result.replace("ß", "&#223;");
+    result = result.replace("Ä", "&#196;");
+    result = result.replace("Ö", "&#246;");
+    result = result.replace("Ü", "&#220;");
+    result = result.replace("ä", "&#228;");
+    result = result.replace("ö", "&#246;");
+    result = result.replace("ü", "&#252;");
+    result = result.replace("'", "&apos;");
+    result = result.replace("°", "&#176;");
+    result = result.replace("®", "&#174;");
+    result = result.replace("©", "&#169;");
+    result = result.replace("–", "&173;");
+    result = result.replace("é", "&#233;");
+    result = result.replace("è", "&#232;");
+    result = result.replace("á", "&#225;");
+    result = result.replace("à", "&#224;");
+    result = result.replace("´", "&#180;");
+    result = result.replace("Ç", "&#199;");
+    result = result.replace("ç", "&#231;");
+    result = result.replace("»", "&187;");
+    result = result.replace("«", "&#171;");
+    result = result.replace("Ž", "&#381;");
+    result = result.replace("ž", "&#392;");
+    result = result.replace("æ", "&230;");
+    result = result.replace("Ý", "&#221;");
+    result = result.replace("ý", "&#253;");
+    result = result.replace("ÿ", "&#255;");
+    result = result.replace("Ÿ", "&#376;");
+    result = result.replace("Ó", "&#211;");
+    result = result.replace("ó", "&#243;");
+    result = result.replace("Ò", "&#210;");
+    result = result.replace("ó", "&#242;");
+    println!("RESULT IS {}", result);
+    return result;
 }
 
 
