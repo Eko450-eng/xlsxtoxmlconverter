@@ -1,6 +1,6 @@
 use crate::{
     types::{AppState, Contacts},
-    utils::map_to_evc,
+    utils::{clean_symbols, map_to_evc},
 };
 use std::{
     fs,
@@ -58,14 +58,14 @@ pub fn generate_xml_new(app: &mut AppState, contacts_list: Contacts) {
         for contact in contacts {
             if filters.contains(&map_to_evc(contact.0.clone(), app)) {
                 // Add values to company block
-                company_block.push(create_tag(app, contact.0, contact.1, 3));
+                company_block.push(create_tag(app, contact.0, clean_symbols(contact.1), 3));
                 // company_block.push(format!(
                 //     "              <{0}>{1}</{0}>",
                 //     map_to_evc(contact.0, app),
                 //     contact.1
                 // ));
             } else {
-                contact_block.push(create_tag(app, contact.0, contact.1, 3));
+                contact_block.push(create_tag(app, contact.0, clean_symbols(contact.1), 3));
                 // contact_block.push(format!(
                 //     "            <{0}>{1}</{0}>",
                 //     map_to_evc(contact.0, app),
@@ -127,13 +127,13 @@ pub fn generate_xml(app: &mut AppState, contacts_list: Contacts) {
                 company_block.push(format!(
                     "              <{0}>{1}</{0}>",
                     map_to_evc(contact.0, app),
-                    contact.1
+                    clean_symbols(contact.1)
                 ));
             } else {
                 contact_block.push(format!(
                     "            <{0}>{1}</{0}>",
                     map_to_evc(contact.0, app),
-                    contact.1
+                    clean_symbols(contact.1)
                 ))
             }
         }
