@@ -1,7 +1,6 @@
 use std::{
     collections::HashMap,
     env,
-    error::Error,
     fs::{self, File},
     io::{BufRead, BufReader},
     path::PathBuf,
@@ -111,7 +110,6 @@ pub fn get_default_documents_path() -> PathBuf {
 
 pub fn clean_symbols(input: String) -> String {
     let mut result = String::new();
-
     result = input.replace("&", "&amp;");
     result = result.replace(">", "&gt;");
     result = result.replace("<", "&lt;");
@@ -150,8 +148,7 @@ pub fn clean_symbols(input: String) -> String {
     result = result.replace("ó", "&#243;");
     result = result.replace("Ò", "&#210;");
     result = result.replace("ó", "&#242;");
-    println!("RESULT IS {}", result);
-    return result;
+    result
 }
 
 

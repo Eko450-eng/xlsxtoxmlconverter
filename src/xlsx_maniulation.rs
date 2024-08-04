@@ -1,10 +1,13 @@
 use calamine::{open_workbook, Reader, Xlsx};
+use chrono::{DateTime, Duration, Local};
 
-use std::collections::HashMap;
 use crate::types::{AppState, Contacts};
+use std::collections::HashMap;
 
 pub fn read_excel(app: &mut AppState) -> Result<Contacts, Box<dyn std::error::Error>> {
+    let start_time: DateTime<Local> = Local::now();
     let path = app.input.clone().unwrap();
+    println!("Read excel: {:?}", path);
     let mut workbook: Xlsx<_> = open_workbook(path)?;
     let range = workbook.worksheet_range(&app.worksheet_name).unwrap();
     let mut contacts: Contacts = vec![];
@@ -21,5 +24,8 @@ pub fn read_excel(app: &mut AppState) -> Result<Contacts, Box<dyn std::error::Er
         }
     }
 
+    let end_time: DateTime<Local> = Local::now();
+    let duration: Duration = end_time.signed_duration_since(start_time);
+    println!("Read Successfull in {:?}", duration);
     Ok(contacts)
 }

@@ -1,6 +1,5 @@
 use egui_file::FileDialog;
 use std::collections::HashMap;
-use std::env;
 use std::path::PathBuf;
 
 use crate::utils::get_default_documents_path;
@@ -42,9 +41,9 @@ impl Default for AppState {
             field3: "contact".to_string(),
             child_block: "company".to_string(),
             filters: "companyCode, companyName".to_string(),
-            output: Some(default_document_path.clone()),
-            input: Some(default_document_path.clone()),
-            config_path: Some(default_document_path),
+            output: Some(PathBuf::from("/home/eko/Documents/")),
+            input: Some(PathBuf::from("/home/eko/Documents/EVIATEC_EVC_Kontakte2XML.xlsx")),
+            config_path: Some(PathBuf::from("/home/eko/Documents/evc/config")),
             worksheet_name: "Daten".to_string(),
             open_input_dialog: None,
             open_config_dialog: None,

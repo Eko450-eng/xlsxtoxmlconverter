@@ -21,6 +21,7 @@ impl App for AppState {
         let mut toast = Toasts::new()
             .anchor(Align2::RIGHT_TOP, (-10.0, -10.0))
             .direction(Direction::BottomUp);
+
         egui::CentralPanel::default().show(ctx, |ui| {
             ui.with_layout(Layout::top_down(Align::Center), |ui| {
                 ui.horizontal(|ui| {
@@ -137,13 +138,11 @@ impl App for AppState {
 
                     if ui.button("Create default config at .../Documents/evc").clicked(){
                         match generate_defaults(self) {
-                            Ok(())=>println!("Createdd"),
+                            Ok(())=>println!("Created"),
                             Err(e) => eprintln!("{e}"),
                         };
                     };
                 });
-
-                toast.show(ctx);
 
                 if self.show_editor {
                     if ui.input(|i| i.to_owned().consume_key(Modifiers::CTRL, Key::S)) {
@@ -195,10 +194,26 @@ impl App for AppState {
 
                 if submit_btn.clicked() {
                     if let Ok(values) = read_excel(self) {
-                        generate_xml(self, values)
+                        match generate_xml(self, values){
+                            Ok(o)=> {
+                                println!("HELLOOOOO {}", o);
+                                toast.add(Toast {
+                                    text: o.into(),
+                                    kind: ToastKind::Error,
+                                    options: ToastOptions::default()
+                                        .duration_in_seconds(2.0)
+                                        .show_progress(true),
+                                    ..Default::default()
+                                });
+                            },
+                            Err(e)=>println!("{e}"),
+                        }
                     }
                 }
             });
+
+            toast.show(ctx);
+
             egui::TopBottomPanel::top("menu_bar").show_inside(ui, |ui| {
                 ui.label("Ctrl-S to save in editor");
                 ui.label("Hover over Text for more information");

@@ -13,12 +13,9 @@
         devShells.default = pkgs.mkShell {
           name = "catppuccin-egui";
           packages = with pkgs; [
-            cargo
-            rustc
             clippy
             rustfmt
             cargo-semver-checks
-            # rust-analyzer
             vimPlugins.rustaceanvim
           ];
           # I use Wayland so this probably won't work if you're on X. Please
