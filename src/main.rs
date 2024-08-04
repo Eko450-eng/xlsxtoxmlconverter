@@ -196,7 +196,7 @@ impl App for AppState {
                     if let Ok(values) = read_excel(self) {
                         match generate_xml(self, values){
                             Ok(o)=> {
-                                println!("HELLOOOOO {}", o);
+                                println!("{o}");
                                 toast.add(Toast {
                                     text: o.into(),
                                     kind: ToastKind::Error,

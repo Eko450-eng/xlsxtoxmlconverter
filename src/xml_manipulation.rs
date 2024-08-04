@@ -90,10 +90,17 @@ pub fn generate_xml(app: &mut AppState, contacts_list: Contacts) -> Result<Strin
         buf.push(field3_closing.to_owned());
     }
     // Loop end
+    let mut end_time: DateTime<Local> = Local::now();
+    let duration: Duration = end_time.signed_duration_since(start_time);
+    println!("LOOP took {:?}", duration);
+    
+
+
+
     buf.push(field2_closing);
     buf.push(field1_closing);
 
-    let end_time: DateTime<Local> = Local::now();
+    end_time = Local::now();
 
     if Path::exists(&output) {
         match fs::remove_file(&output) {
