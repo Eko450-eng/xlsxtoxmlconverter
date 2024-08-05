@@ -2,144 +2,135 @@ use chrono::{DateTime, Duration, Local};
 
 use crate::{
     types::{AppState, Contacts},
-    utils::{clean_symbols, map_to_evc},
+    utils::{clean_symbols, generate_config},
 };
 use std::{
-    fs,
-    io::Write,
+    fs::{self, File},
+    io::{BufWriter, Write},
     path::{Path, PathBuf},
 };
 
-#[allow(unused)]
-fn create_tag(app: &mut AppState, key: String, value: String, indents: i16) -> String {
-    let evc_key = map_to_evc(key, app);
-    let mut indent_string = vec![];
-    for _ in 0..indents {
-        indent_string.push("    ")
-    }
-
-    let mut r = vec![];
-
-    r.push(format!("{}<{}>", indent_string.join(" "), evc_key));
-    r.push(format!("<{}>", value));
-    r.push(format!("</{}>", evc_key));
-
-    r.join("")
-}
-
-pub fn generate_xml(app: &mut AppState, contacts_list: Contacts) -> Result<String, String> {
+pub fn parse_content(app: &mut AppState, contacts_list: Contacts, file_raw: &mut File) {
     let start_time: DateTime<Local> = Local::now();
-    let mut output = app.output.clone().unwrap();
-    let output_name = PathBuf::from(app.out_file_name.clone());
-
-    output.push(output_name);
-
-    let mut buf: Vec<String> = vec!["<?xml version=\"1.0\" encoding=\"UTF-16\"?>".to_string()];
     let filters: Vec<String> = app
         .filters
         .split(',')
         .map(|s| s.trim().to_string())
         .collect();
 
-    let field1_opening = format!("<{0}>", app.field1);
-    let field1_closing = format!("</{0}>", app.field1);
-    let field2_opening = format!("    <{0}>", app.field2);
-    let field2_closing = format!("    </{0}>", app.field2);
-    let field3_opening = format!("        <{0}>", app.field3);
-    let field3_closing = format!("        </{0}>", app.field3);
+    let mut file = BufWriter::new(file_raw);
 
-    buf.push(field1_opening);
-    buf.push(field2_opening);
+    let _ = file.write("<?xml version=\"1.0\" encoding=\"UTF-16\"?>".as_bytes());
+    let _ = file.write(format!("<{0}>\n", app.field1).as_bytes());
+    let _ = file.write(format!("    <{0}>\n", app.field2).as_bytes());
+
+    let conf = generate_config(app);
+    let empty_string = " ".to_string();
 
     // Loop
     for contacts in contacts_list {
-        buf.push(field3_opening.to_owned());
+        let _ = file.write(format!("        <{0}>\n", app.field3).as_bytes());
 
         // Enter Actuall information
-        let mut company_block: Vec<String> = vec![];
-        let mut contact_block: Vec<String> = vec![];
+        let mut company_block = Vec::new();
+        let mut contact_block = Vec::new();
+
         for contact in contacts {
-            if filters.contains(&map_to_evc(contact.0.to_owned(), app)) {
+            // if filters.contains(&map_to_evc(contact.0.to_owned(), app)) {
+            if filters.contains(&contact.0) {
                 // Add values to company block
                 let cleaned_string = clean_symbols(contact.1);
-                company_block.push(format!(
-                    "              <{0}>{1}</{0}>",
-                    map_to_evc(contact.0, app),
-                    cleaned_string
-                ));
+                let tt = conf.clone();
+                let t = tt.get(&contact.0);
+                let _ = writeln!(
+                    &mut company_block,
+                    "            <{0}>{1}</{0}>",
+                    t.unwrap_or(&empty_string), cleaned_string
+                );
             } else {
                 let cleaned_string = clean_symbols(contact.1);
-                contact_block.push(format!(
+                let tt = conf.clone();
+                let t = tt.get(&contact.0);
+                let _ = writeln!(
+                    &mut contact_block,
                     "            <{0}>{1}</{0}>",
-                    map_to_evc(contact.0, app),
-                    cleaned_string
-                ))
+                    t.unwrap_or(&empty_string), cleaned_string
+                );
             }
         }
 
-        buf.push(format!("            <{}>", app.child_block));
+        let _ = file.write(format!("            <{}>\n", app.child_block).as_bytes());
+
         for company_data in company_block {
-            buf.push(company_data);
+            let _ = file.write(std::slice::from_ref(&company_data));
         }
-        buf.push(format!("            </{}>", app.child_block));
+        let _ = file.write(format!("            </{}>\n", app.child_block).as_bytes());
 
         for contact_data in contact_block {
-            buf.push(contact_data);
+            let _ = file.write(std::slice::from_ref(&contact_data));
         }
 
-        buf.push(field3_closing.to_owned());
+        let _ = file.write(format!("        </{0}>\n", app.field3).as_bytes());
     }
     // Loop end
-    let mut end_time: DateTime<Local> = Local::now();
+
+    let _ = file.write(format!("    </{0}>\n", app.field2).as_bytes());
+    let _ = file.write(format!("</{0}>\n", app.field1).as_bytes());
+
+    let end_time: DateTime<Local> = Local::now();
     let duration: Duration = end_time.signed_duration_since(start_time);
+
     println!("LOOP took {:?}", duration);
+}
 
-    buf.push(field2_closing);
-    buf.push(field1_closing);
-
-    end_time = Local::now();
-
+pub fn write_xml(
+    app: &mut AppState,
+    contacts_list: Contacts,
+    file: &mut File,
+) -> Result<String, String> {
     let bom = [0xEF, 0xBB, 0xBF];
+    match file.write_all(&bom) {
+        Ok(_) => {
+            parse_content(app, contacts_list, file);
+            Ok("Done".to_string())
+        }
+        Err(e) => Err(format!("Failed {e}")),
+    }
+}
 
+pub fn generate_xml(app: &mut AppState, contacts_list: Contacts) -> Result<String, String> {
+    let mut output = app.output.clone().unwrap();
+    let output_name = PathBuf::from(app.out_file_name.clone());
+
+    output.push(output_name);
+
+    let start_time: DateTime<Local> = Local::now();
     if Path::exists(&output) {
         match fs::remove_file(&output) {
-            Ok(_) => match fs::File::create_new(output) {
-                Ok(mut file) => match file.write_all(&bom) {
-                    Ok(_) => match file.write_all(buf.join("\n").as_bytes()) {
-                        Ok(_) => {
-                            let duration: Duration = end_time.signed_duration_since(start_time);
-                            Ok(format!("Successfull in {:?}", duration))
-                        }
-                        Err(e) => Err(format!("Failed {e}")),
-                    },
-                    Err(e) => Err(format!("Failed {e}")),
-                },
-                Err(err) => {
-                    eprintln!("Failed because {err}");
-                    Err("Failed".to_string())
+            Ok(_) => match fs::File::create_new(&output) {
+                Ok(mut file) => {
+                    let end_time: DateTime<Local> = Local::now();
+                    let duration: Duration = end_time.signed_duration_since(start_time);
+
+                    println!("Creation took {:?}", duration);
+                    let _ = write_xml(app, contacts_list, &mut file);
+                    Ok("Success".to_string())
                 }
+                Err(e) => Err(format!("Failed creating file {e}")),
             },
-            Err(err) => {
-                eprintln!("Failed because {err}");
-                Err("Failed".to_string())
-            }
+            Err(e) => Err(format!("Failed removing file {e}")),
         }
     } else {
-        match fs::File::create_new(output) {
-            Ok(mut file) => match file.write_all(&bom) {
-                Ok(_) => match file.write_all(buf.join("\n").as_bytes()) {
-                    Ok(_) => {
-                        let duration: Duration = end_time.signed_duration_since(start_time);
-                        Ok(format!("Successfull in {:?}", duration))
-                    }
-                    Err(e) => Err(format!("Failed {e}")),
-                },
-                Err(e) => Err(format!("Failed {e}")),
-            },
-            Err(err) => {
-                eprintln!("Failed because {err}");
-                Err("Failed".to_string())
+        match fs::File::create_new(&output) {
+            Ok(mut file) => {
+                let end_time: DateTime<Local> = Local::now();
+                let duration: Duration = end_time.signed_duration_since(start_time);
+
+                println!("Creation took {:?}", duration);
+                let _ = write_xml(app, contacts_list, &mut file);
+                Ok("Success".to_string())
             }
+            Err(e) => Err(format!("Failed creating file {e}")),
         }
     }
 }

@@ -1,6 +1,6 @@
 use egui_file::FileDialog;
 use std::collections::HashMap;
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 
 use crate::utils::get_default_documents_path;
 
@@ -33,6 +33,16 @@ pub type Contacts = Vec<HashMap<String, String>>;
 impl Default for AppState {
     fn default() -> Self {
         let default_document_path: PathBuf = get_default_documents_path();
+        let default_input_path: PathBuf = get_default_documents_path();
+        let mut default_config_path: PathBuf = get_default_documents_path();
+        let mut existing_config = default_config_path.clone();
+        existing_config.push("evc");
+        existing_config.push("config");
+
+        if Path::exists(&existing_config){
+            default_config_path = existing_config;
+        }
+
         Self {
             config_content: "".to_string(),
             out_file_name: "CONTACTS.xml".to_string(),
@@ -42,8 +52,8 @@ impl Default for AppState {
             child_block: "company".to_string(),
             filters: "companyCode, companyName".to_string(),
             output: Some(default_document_path.clone()),
-            input: Some(default_document_path.clone()),
-            config_path: Some(default_document_path),
+            input: Some(default_input_path.clone()),
+            config_path: Some(default_config_path),
             worksheet_name: "Daten".to_string(),
             open_input_dialog: None,
             open_config_dialog: None,
