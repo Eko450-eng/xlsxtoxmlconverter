@@ -12,7 +12,7 @@ use egui_code_editor::{CodeEditor, Syntax};
 use egui_file::FileDialog;
 use egui_toast::{Toast, ToastKind, ToastOptions, Toasts};
 use types::AppState;
-use utils::generate_defaults;
+use utils::{generate_config, generate_defaults};
 use xlsx_maniulation::read_excel;
 use xml_manipulation::generate_xml;
 
@@ -124,12 +124,13 @@ impl App for AppState {
                                     text: "No Config selected!".into(),
                                     kind: ToastKind::Error,
                                     options: ToastOptions::default()
-                                        .duration_in_seconds(2.0)
+                                        .duration_in_seconds(5.0)
                                         .show_progress(true),
                                     ..Default::default()
                                 });
                                 self.show_editor = false;
                             }
+
                             if let Ok(c) = fs::read_to_string(config_path) {
                                 self.config_content = c;
                             };
@@ -193,20 +194,30 @@ impl App for AppState {
                 let submit_btn = ui.button("Save and generate");
 
                 if submit_btn.clicked() {
-                    if let Ok(values) = read_excel(self) {
+                    match read_excel(self) {
+                        Ok(values)=>
                         match generate_xml(self, values){
                             Ok(o)=> {
-                                println!("{o}");
                                 toast.add(Toast {
                                     text: o.into(),
-                                    kind: ToastKind::Error,
+                                    kind: ToastKind::Success,
                                     options: ToastOptions::default()
-                                        .duration_in_seconds(2.0)
+                                        .duration(None)
                                         .show_progress(true),
                                     ..Default::default()
                                 });
                             },
                             Err(e)=>println!("{e}"),
+                        }
+                        Err(e)=> {
+                            toast.add(Toast {
+                            text: format!("Error {e}").into(),
+                            kind: ToastKind::Error,
+                            options: ToastOptions::default()
+                                .duration_in_seconds(5.0)
+                                .show_progress(true),
+                            ..Default::default()
+                            });
                         }
                     }
                 }
@@ -215,6 +226,18 @@ impl App for AppState {
             toast.show(ctx);
 
             egui::TopBottomPanel::top("menu_bar").show_inside(ui, |ui| {
+                    if (ui.button("Load config")).clicked() {
+                        let con = generate_config(self);
+                        self.field1 = con.first_group;
+                        self.field2 = con.second_group;
+                        self.field3 = con.third_group;
+                        self.child_block = con.fourth_group;
+                        self.out_file_name = con.name;
+                        self.input = Some(con.input);
+                        self.output = Some(con.output);
+                        self.filters = con.filters;
+                        self.worksheet_name = con.sheet;
+                    }
                 ui.label("Ctrl-S to save in editor");
                 ui.label("Hover over Text for more information");
             });

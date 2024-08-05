@@ -24,7 +24,8 @@ pub fn parse_content(app: &mut AppState, contacts_list: Contacts, file_raw: &mut
     let _ = file.write(format!("<{0}>\n", app.field1).as_bytes());
     let _ = file.write(format!("    <{0}>\n", app.field2).as_bytes());
 
-    let conf = generate_config(app);
+    let config = generate_config(app);
+    let conf = config.kv_list;
     let empty_string = " ".to_string();
 
     // Loop
@@ -37,24 +38,23 @@ pub fn parse_content(app: &mut AppState, contacts_list: Contacts, file_raw: &mut
 
         for contact in contacts {
             // if filters.contains(&map_to_evc(contact.0.to_owned(), app)) {
+            let cleaned_string = clean_symbols(contact.1);
+            let tt = conf.clone();
+            let t = tt.get(&contact.0);
             if filters.contains(&contact.0) {
                 // Add values to company block
-                let cleaned_string = clean_symbols(contact.1);
-                let tt = conf.clone();
-                let t = tt.get(&contact.0);
                 let _ = writeln!(
                     &mut company_block,
                     "            <{0}>{1}</{0}>",
-                    t.unwrap_or(&empty_string), cleaned_string
+                    t.unwrap_or(&empty_string),
+                    cleaned_string
                 );
             } else {
-                let cleaned_string = clean_symbols(contact.1);
-                let tt = conf.clone();
-                let t = tt.get(&contact.0);
                 let _ = writeln!(
                     &mut contact_block,
                     "            <{0}>{1}</{0}>",
-                    t.unwrap_or(&empty_string), cleaned_string
+                    t.unwrap_or(&empty_string),
+                    cleaned_string
                 );
             }
         }
@@ -110,11 +110,10 @@ pub fn generate_xml(app: &mut AppState, contacts_list: Contacts) -> Result<Strin
             Ok(_) => match fs::File::create_new(&output) {
                 Ok(mut file) => {
                     let end_time: DateTime<Local> = Local::now();
-                    let duration: Duration = end_time.signed_duration_since(start_time);
-
-                    println!("Creation took {:?}", duration);
                     let _ = write_xml(app, contacts_list, &mut file);
-                    Ok("Success".to_string())
+
+                    let duration: Duration = end_time.signed_duration_since(start_time);
+                    Ok(format!("Finished in {:?} seconds and  {:?} nanoseconds", duration.num_seconds(), duration.num_nanoseconds().unwrap_or(0)))
                 }
                 Err(e) => Err(format!("Failed creating file {e}")),
             },
@@ -124,11 +123,10 @@ pub fn generate_xml(app: &mut AppState, contacts_list: Contacts) -> Result<Strin
         match fs::File::create_new(&output) {
             Ok(mut file) => {
                 let end_time: DateTime<Local> = Local::now();
-                let duration: Duration = end_time.signed_duration_since(start_time);
-
-                println!("Creation took {:?}", duration);
                 let _ = write_xml(app, contacts_list, &mut file);
-                Ok("Success".to_string())
+
+                let duration: Duration = end_time.signed_duration_since(start_time);
+                Ok(format!("Finished in {:?} seconds and  {:?} nanoseconds", duration.num_seconds(), duration.num_nanoseconds()))
             }
             Err(e) => Err(format!("Failed creating file {e}")),
         }

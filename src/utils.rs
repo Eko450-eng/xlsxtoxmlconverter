@@ -8,24 +8,89 @@ use std::{
 
 use crate::types::AppState;
 
-pub fn generate_config(app: &mut AppState) -> HashMap<String, String> {
+#[derive(Clone)]
+pub struct TemplateConfig {
+    pub kv_list: HashMap<String, String>,
+    pub input: PathBuf,
+    pub output: PathBuf,
+    pub name: String,
+    pub first_group: String,
+    pub second_group: String,
+    pub third_group: String,
+    pub fourth_group: String,
+    pub filters: String,
+    pub sheet: String,
+}
+
+pub fn generate_config(app: &mut AppState) -> TemplateConfig {
     let mut kv_list: HashMap<String, String> = HashMap::new();
     let config_file = app.config_path.clone().unwrap();
+    let mut config: TemplateConfig = TemplateConfig {
+        kv_list: HashMap::new(),
+        input: PathBuf::new(),
+        output: PathBuf::new(),
+        name: String::new(),
+        first_group: String::new(),
+        second_group: String::new(),
+        third_group: String::new(),
+        fourth_group: String::new(),
+        filters: String::new(),
+        sheet: String::new(),
+    };
 
     if let Ok(file) = File::open(config_file) {
         let config_file = BufReader::new(file);
         for line in config_file.lines().map_while(Result::ok) {
-            let parts: Vec<&str> = line.split('=').collect();
+            if line.starts_with(':') {
+                if line.starts_with(":sheet") {
+                    let parts: Vec<&str> = line.split('=').collect();
+                    config.sheet = parts[1].trim().to_string();
+                }
+                if line.starts_with(":in") {
+                    let parts: Vec<&str> = line.split('=').collect();
+                    config.input = PathBuf::from(parts[1].trim());
+                }
+                if line.starts_with(":out") {
+                    let parts: Vec<&str> = line.split('=').collect();
+                    config.output = PathBuf::from(parts[1].trim());
+                }
+                if line.starts_with(":name") {
+                    let parts: Vec<&str> = line.split('=').collect();
+                    config.name = parts[1].trim().to_string();
+                }
+                if line.starts_with(":first") {
+                    let parts: Vec<&str> = line.split('=').collect();
+                    config.first_group = parts[1].trim().to_string();
+                }
+                if line.starts_with(":second") {
+                    let parts: Vec<&str> = line.split('=').collect();
+                    config.second_group = parts[1].trim().to_string();
+                }
+                if line.starts_with(":third") {
+                    let parts: Vec<&str> = line.split('=').collect();
+                    config.third_group = parts[1].trim().to_string();
+                }
+                if line.starts_with(":fourth") {
+                    let parts: Vec<&str> = line.split('=').collect();
+                    config.fourth_group = parts[1].trim().to_string();
+                }
+                if line.starts_with(":filters") {
+                    let parts: Vec<&str> = line.split('=').collect();
+                    config.filters = parts[1].trim().to_string();
+                }
+            } else {
+                let parts: Vec<&str> = line.split('=').collect();
 
-            if parts.len() == 2 {
-                let key = parts[0].trim();
-                let value = parts[1].trim();
-                kv_list.insert(key.to_string(), value.to_string());
+                if parts.len() == 2 {
+                    let key = parts[0].trim();
+                    let value = parts[1].trim();
+                    kv_list.insert(key.to_string(), value.to_string());
+                }
             }
         }
     }
 
-    kv_list
+    config 
 }
 
 pub fn generate_defaults(app: &mut AppState) -> Result<(), String> {
