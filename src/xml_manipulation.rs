@@ -93,23 +93,25 @@ pub fn generate_xml(app: &mut AppState, contacts_list: Contacts) -> Result<Strin
     let mut end_time: DateTime<Local> = Local::now();
     let duration: Duration = end_time.signed_duration_since(start_time);
     println!("LOOP took {:?}", duration);
-    
-
-
 
     buf.push(field2_closing);
     buf.push(field1_closing);
 
     end_time = Local::now();
 
+    let bom = [0xEF, 0xBB, 0xBF];
+
     if Path::exists(&output) {
         match fs::remove_file(&output) {
             Ok(_) => match fs::File::create_new(output) {
-                Ok(mut file) => match file.write_all(buf.join("\n").as_bytes()) {
-                    Ok(_) => {
-                        let duration: Duration = end_time.signed_duration_since(start_time);
-                        Ok(format!("Successfull in {:?}", duration))
-                    }
+                Ok(mut file) => match file.write_all(&bom) {
+                    Ok(_) => match file.write_all(buf.join("\n").as_bytes()) {
+                        Ok(_) => {
+                            let duration: Duration = end_time.signed_duration_since(start_time);
+                            Ok(format!("Successfull in {:?}", duration))
+                        }
+                        Err(e) => Err(format!("Failed {e}")),
+                    },
                     Err(e) => Err(format!("Failed {e}")),
                 },
                 Err(err) => {
@@ -124,11 +126,14 @@ pub fn generate_xml(app: &mut AppState, contacts_list: Contacts) -> Result<Strin
         }
     } else {
         match fs::File::create_new(output) {
-            Ok(mut file) => match file.write_all(buf.join("\n").as_bytes()) {
-                Ok(_) => {
-                    let duration: Duration = end_time.signed_duration_since(start_time);
-                    Ok(format!("Successfull in {:?}", duration))
-                }
+            Ok(mut file) => match file.write_all(&bom) {
+                Ok(_) => match file.write_all(buf.join("\n").as_bytes()) {
+                    Ok(_) => {
+                        let duration: Duration = end_time.signed_duration_since(start_time);
+                        Ok(format!("Successfull in {:?}", duration))
+                    }
+                    Err(e) => Err(format!("Failed {e}")),
+                },
                 Err(e) => Err(format!("Failed {e}")),
             },
             Err(err) => {
