@@ -33,6 +33,13 @@ pub type Contacts = Vec<HashMap<String, String>>;
 impl Default for AppState {
     fn default() -> Self {
         let default_document_path: PathBuf = get_default_documents_path();
+        let mut default_input_path: PathBuf = get_default_documents_path();
+        let mut default_config_path: PathBuf = get_default_documents_path();
+        default_input_path.push("Contacts.xlsx");
+        default_config_path.push("evc");
+        default_config_path.push("config");
+
+
         Self {
             config_content: "".to_string(),
             out_file_name: "CONTACTS.xml".to_string(),
@@ -42,8 +49,8 @@ impl Default for AppState {
             child_block: "company".to_string(),
             filters: "companyCode, companyName".to_string(),
             output: Some(default_document_path.clone()),
-            input: Some(default_document_path.clone()),
-            config_path: Some(default_document_path),
+            input: Some(default_input_path.clone()),
+            config_path: Some(default_config_path),
             worksheet_name: "Daten".to_string(),
             open_input_dialog: None,
             open_config_dialog: None,
