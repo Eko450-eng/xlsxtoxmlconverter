@@ -8,39 +8,24 @@ use std::{
 
 use crate::types::AppState;
 
-pub fn generate_config(app: &mut AppState) -> Vec<HashMap<String, String>> {
-    let mut kv_list: Vec<HashMap<String, String>> = vec![];
+pub fn generate_config(app: &mut AppState) -> HashMap<String, String> {
+    let mut kv_list: HashMap<String, String> = HashMap::new();
     let config_file = app.config_path.clone().unwrap();
 
     if let Ok(file) = File::open(config_file) {
         let config_file = BufReader::new(file);
-        for line in config_file.lines() {
-            let mut map: HashMap<String, String> = HashMap::new();
-            if let Ok(line) = line {
-                let parts: Vec<&str> = line.split('=').collect();
+        for line in config_file.lines().map_while(Result::ok) {
+            let parts: Vec<&str> = line.split('=').collect();
 
-                if parts.len() == 2 {
-                    let key = parts[0].trim();
-                    let value = parts[1].trim();
-                    map.insert(key.to_string(), value.to_string());
-                    kv_list.push(map);
-                }
+            if parts.len() == 2 {
+                let key = parts[0].trim();
+                let value = parts[1].trim();
+                kv_list.insert(key.to_string(), value.to_string());
             }
         }
     }
+
     kv_list
-}
-
-pub fn map_to_evc(input_value: String, app: &mut AppState) -> String {
-    let map = generate_config(app);
-    let mut rv = "NO_VALUE_MAPPED_IN_CONFIG".to_string();
-
-    for i in map {
-        if let Some(value) = i.get(&input_value) {
-            rv = value.to_string()
-        }
-    }
-    rv
 }
 
 pub fn generate_defaults(app: &mut AppState) -> Result<(), String> {
@@ -49,30 +34,30 @@ pub fn generate_defaults(app: &mut AppState) -> Result<(), String> {
     path.push("evc");
 
     let default_config_text = "Mandant Nr. = companyCode
-Mandant Name = companyName
-Typ = contactType
-Kontakt Nr. = contactNumber
-Kreditoren Nr. = contactVendorNumber
-Kunden Nr. = contactCustomerNumber
-Name 1 = contactNameA
-Name 2 = contactNameB
-Name 3 = contactNameC
-Strasse = contactAddressStreet
-PLZ = contactAddressZipCode
-Ort = contactAddressCity
-Land = contactAddressCountry
-Land Kürzel = contactAddressCountryShort
-Telefon = contactTelephoneNumber
-Fax = contactFaxNumber
-Email = contactEmail
-BLZ = contactBankSWIFT
-Institut = contactBank
-BIC = contactBankSWIFT
-IBAN = contactBankIBAN
-ILN = contactILN
-Steuer Nr. = contactTAXidNumber
-Ust. ID = contactVATidNumber
-Matchcode = contactMatchcode";
+        Mandant Name = companyName
+        Typ = contactType
+        Kontakt Nr. = contactNumber
+        Kreditoren Nr. = contactVendorNumber
+        Kunden Nr. = contactCustomerNumber
+        Name 1 = contactNameA
+        Name 2 = contactNameB
+        Name 3 = contactNameC
+        Strasse = contactAddressStreet
+        PLZ = contactAddressZipCode
+        Ort = contactAddressCity
+        Land = contactAddressCountry
+        Land Kürzel = contactAddressCountryShort
+        Telefon = contactTelephoneNumber
+        Fax = contactFaxNumber
+        Email = contactEmail
+        BLZ = contactBankSWIFT
+        Institut = contactBank
+        BIC = contactBankSWIFT
+        IBAN = contactBankIBAN
+        ILN = contactILN
+        Steuer Nr. = contactTAXidNumber
+        Ust. ID = contactVATidNumber
+        Matchcode = contactMatchcode";
 
     match fs::create_dir_all(path.clone()) {
         Ok(()) => {
@@ -109,6 +94,7 @@ pub fn get_default_documents_path() -> PathBuf {
 }
 
 pub fn clean_symbols(input: String) -> String {
+    #[allow(unused)]
     let mut result = String::new();
     result = input.replace("&", "&amp;");
     result = result.replace(">", "&gt;");
@@ -150,10 +136,3 @@ pub fn clean_symbols(input: String) -> String {
     result = result.replace("ó", "&#242;");
     result
 }
-
-
-
-
-
-
-
